@@ -79,8 +79,31 @@ describe('Event Handling Tests', () => {
     const textInputDisplay = document.getElementById('textInputDisplay')
 
     textInput.value = 'Hello'
-    textInput.dispatchEvent(new Event('input'))
+    textInput.dispatchEvent(new Event('input', { bubbles: true }))
     expect(textInputDisplay).not.toBeNull() // Ensure the div exists
     expect(textInputDisplay.textContent).toBe('You typed: Hello')
+  })
+
+  test('button hover events add and remove the hover class', () => {
+    const changeColorButton = document.getElementById('changeColorButton')
+
+    changeColorButton.dispatchEvent(new Event('mouseover', { bubbles: true }))
+    expect(changeColorButton.classList.contains('button-hover')).toBe(true)
+
+    changeColorButton.dispatchEvent(new Event('mouseout', { bubbles: true }))
+    expect(changeColorButton.classList.contains('button-hover')).toBe(false)
+  })
+
+  test('form submit displays submitted text and prevents default', () => {
+    const textInput = document.getElementById('textInput')
+    const formSubmitDisplay = document.getElementById('formSubmitDisplay')
+    const form = document.getElementById('textInputForm')
+
+    textInput.value = 'Testing'
+    const submitEvent = new Event('submit', { bubbles: true, cancelable: true })
+    const eventResult = form.dispatchEvent(submitEvent)
+
+    expect(eventResult).toBe(false)
+    expect(formSubmitDisplay.textContent).toBe('Submitted: Testing')
   })
 })
